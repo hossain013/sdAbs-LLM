@@ -1,5 +1,4 @@
 <div align="center">
-  <img src="https://via.placeholder.com/150" alt="sdAbs-LLM Logo" width="150" height="150">
   <h1>sdAbs-LLM: Generative Large Language Models for de novo Antibody Design and Agentic Evaluation</h1>
   
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -52,7 +51,43 @@ Our customized models have been successfully fine-tuned and tested on four promi
 4. **SARS-CoV-2:** High sequence generation confidence, resulting in structurally stable, novel sequences targeting the viral envelope.
 
 ## 🚀 Inference Information
-Inference generation uses our fixed-vocabulary tokenizer (BPE backend) recognizing 20 canonical amino acid residues. Generated leads are passed through our Agentic Evaluation Pipeline:
+Inference generation uses our fixed-vocabulary tokenizer (BPE backend) recognizing 20 canonical amino acid residues. Generated leads are passed through our Agentic Evaluation Pipeline.
+
+### Hugging Face Inference Example
+You can generate sequences using our pre-trained models hosted on Hugging Face:
+
+```python
+import torch
+from transformers import AutoTokenizer, AutoModelForCausalLM
+
+# Load tokenizer and model
+checkpoint_path = "Delower/Llama4-Ebola-Ab"
+tokenizer = AutoTokenizer.from_pretrained(checkpoint_path)
+model = AutoModelForCausalLM.from_pretrained(checkpoint_path)
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
+model.to(device)
+model.eval()
+
+# Generate sequences
+prompts = ["[BOS]"]
+inputs = tokenizer(prompts, return_tensors="pt", padding=True).to(device)
+
+with torch.no_grad():
+    outputs = model.generate(
+        input_ids=inputs["input_ids"],
+        attention_mask=inputs["attention_mask"],
+        max_new_tokens=170,
+        temperature=1.0,
+        do_sample=True,
+    )
+
+decoded = tokenizer.batch_decode(outputs, skip_special_tokens=True)
+sequences = [seq.replace(" ", "") for seq in decoded]
+print("Generated Sequences:\\n", sequences)
+```
+
+### Agentic Evaluation Pipeline
 * Top 20 candidates (2% of generated output) structurally verified.
 * Uses **AlphaFold-2**, **Boltz-2**, **RoseTTAFold-2**, and **ESMFold** to determine pLDDT scores and 3D folding accuracy.
 * Further validated via rigid-body docking using **HDOCK** and **HawDOCK**.
@@ -73,7 +108,7 @@ If you use this repository or its pre-trained models in your research, please co
 ```bibtex
 @article{Hossain2026sdAbsLLM,
   title={Generative Large Language Models For de novo Antibody Design and Agentic Evaluation},
-  author={Hossain, Delower and others},
+  author={Hossain, Delower and Chen, Jake Y. and others},
   journal={TBD},
   year={2026}
 }
