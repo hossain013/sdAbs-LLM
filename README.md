@@ -20,6 +20,9 @@ Despite major advances in computational antibody engineering, systematic compari
 5. **Agentic AI Evaluation:** An advanced MCP + Claude AI integration pipeline that orchestrates multiple structural evaluation tools for dynamic, automated 3D profiling and prioritization.
 
 ## 🏗️ Architecture Overview
+
+![Architecture Workflow](image/AB-Workflow.drawio.png)
+
 We adopted compact configurations inspired by state-of-the-art open-source LLM backbones. All variants share a compressed architecture scale to isolate and assess inductive biases within an antibody domain context:
 * **Llama-4 (Compact)**
 * **Gemma-3 (Compact)**
