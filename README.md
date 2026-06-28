@@ -90,64 +90,7 @@ sequences = [seq.replace(" ", "") for seq in decoded]
 print("Generated Sequences:\\n", sequences)
 ```
 
-### Agentic Evaluation Pipeline
-* Top 20 candidates (2% of generated output) structurally verified.
-* Uses **AlphaFold-2**, **Boltz-2**, **RoseTTAFold-2**, and **ESMFold** to determine pLDDT scores and 3D folding accuracy.
-* Further validated via rigid-body docking using **HDOCK** and **HawDOCK**.
 
-### 🛠️ MCP Server Setup
-
-The Agentic Evaluation framework leverages the Model Context Protocol (MCP) to integrate Claude Desktop (or other MCP-capable AI agents) with 3D folding and profiling tools. The MCP server is implemented in [mcp_server.py](file:///c:/Users/mhoss/Box/ACM_Antibody_Design_Project/Github-sdAbs-LLM/Scripts/mcp_server.py) and wraps the `openprotein` API.
-
-#### 🔑 Credentials & Environment Configuration
-1. **OpenProtein Credentials:** Obtain your credentials (username and password) from OpenProtein.
-2. **Environment Variables:** Create a `.env` file in the root of the repository or in the `Scripts/` directory:
-   ```env
-   OP_USERNAME=your_openprotein_username
-   OP_PASSWORD=your_openprotein_password
-   ```
-
-#### 📦 Installation in Conda Environment
-Activate your Conda environment and install the required dependencies (including the `mcp` SDK):
-```bash
-conda activate antibody_dl
-pip install mcp openprotein-python python-dotenv pandas biopython modlamp pfeature mhcflurry
-```
-
-#### 🖥️ Claude Desktop Integration
-To allow Claude Desktop to interact with the OpenProtein MCP server:
-1. Open your Claude Desktop configuration file:
-   - **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
-   - **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
-2. Add the `openprotein-mcp` server to the `mcpServers` configuration:
-   ```json
-   {
-     "mcpServers": {
-       "openprotein-mcp": {
-         "command": "conda",
-         "args": [
-           "run",
-           "-n",
-           "antibody_dl",
-           "python",
-           "C:/Users/mhoss/Box/ACM_Antibody_Design_Project/Github-sdAbs-LLM/Scripts/mcp_server.py"
-         ],
-         "env": {
-           "OP_USERNAME": "your_openprotein_username",
-           "OP_PASSWORD": "your_openprotein_password"
-         }
-      }
-     }
-   }
-   ```
-   *Note: Remember to replace `C:/Users/mhoss/Box/ACM_Antibody_Design_Project/Github-sdAbs-LLM/Scripts/mcp_server.py` with the absolute path of the script on your system.*
-
-#### 🚀 Running Manually (Verification)
-You can run the server manually in the command line for verification:
-```bash
-conda activate antibody_dl
-python Scripts/mcp_server.py
-```
 
 ## 📈 Result Table (Summary)
 | Metric | Llama-4 | Gemma-3 | DeepSeek-V3 | Mistral | Nemotron-3 |
